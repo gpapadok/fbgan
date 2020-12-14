@@ -31,7 +31,7 @@ import numpy as np
 from models import *
 
 class WGAN_LangGP():
-    def __init__(self, batch_size=64, lr=0.0001, num_epochs=80, seq_len = 156, data_dir='./data/trainset.fa', \
+    def __init__(self, batch_size=64, lr=0.0001, num_epochs=80, seq_len = 156, data_dir='./data/random_dna_seqs.fa', \
         run_name='test', hidden=512, d_steps = 10):
         self.hidden = hidden
         self.batch_size = batch_size
@@ -218,7 +218,11 @@ def main():
     parser.add_argument("--run_name", default= "ncrna", help="Name for output files (checkpoint and sample dir)")
     parser.add_argument("--load_dir", default="", help="Option to load checkpoint from other model (Defaults to run name)")
     args = parser.parse_args()
-    model = WGAN_LangGP(run_name=args.run_name)
+    model = WGAN_LangGP(run_name=args.run_name,
+                        seq_len=200,
+                        data_dir="./data/trainset.fa",
+                        num_epochs=1,
+                       )
     model.train_model(args.load_dir)
 
 if __name__ == '__main__':

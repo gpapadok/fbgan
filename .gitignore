@@ -1,4 +1,6 @@
 __pycache__
 .ipynbcheckpoints
 samples/realProt_50aa
+samples/ncrna
 checkpoint/realProt_50aa
+checkpoint/ncrna
