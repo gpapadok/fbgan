@@ -33,7 +33,8 @@ class ResBlock(nn.Module):
 
     def forward(self, input):
         output = self.res_block(input)
-        return input + (0.3*output)
+        # return input + (0.3*output)
+        return input + (.2*output)
 
 class Generator_lang(nn.Module):
     def __init__(self, n_chars, seq_len, batch_size, hidden):
@@ -52,6 +53,8 @@ class Generator_lang(nn.Module):
         self.batch_size = batch_size
         self.hidden = hidden
 
+        self.tau = 1.
+
     def forward(self, noise):
         output = self.fc1(noise)
         output = output.view(-1, self.hidden, self.seq_len) # (BATCH_SIZE, DIM, SEQ_LEN)
@@ -61,7 +64,8 @@ class Generator_lang(nn.Module):
         shape = output.size()
         output = output.contiguous()
         output = output.view(self.batch_size*self.seq_len, -1)
-        output = gumbel_softmax(output, 0.5)
+        # output = gumbel_softmax(output, 0.5)
+        output = gumbel_softmax(output, self.tau)
         return output.view(shape) # (BATCH_SIZE, SEQ_LEN, len(charmap))
 
 class Discriminator_lang(nn.Module):

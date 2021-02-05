@@ -57,8 +57,14 @@ class WGAN_LangGP():
             self.D.cuda()
         print(self.G)
         print(self.D)
-        self.G_optimizer = optim.Adam(self.G.parameters(), lr=self.lr, betas=(0.5, 0.9))
-        self.D_optimizer = optim.Adam(self.D.parameters(), lr=self.lr, betas=(0.5, 0.9))
+        self.G_optimizer = optim.Adam(self.G.parameters(), lr=self.lr, 
+            # betas=(0.5, 0.9)
+            betas=(.1, .99)
+            )
+        self.D_optimizer = optim.Adam(self.D.parameters(), lr=self.lr, 
+            # betas=(0.5, 0.9)
+            betas=(.1, .99)
+            )
 
     def load_data(self, datadir):
         max_examples = 1e6
@@ -202,6 +208,8 @@ class WGAN_LangGP():
                     plot_losses([d_fake_losses, d_real_losses],["d_fake", "d_real"], self.sample_dir + "d_loss_components.png")
                 counter += 1
             np.random.shuffle(self.data)
+            self.G.tau = max(.5, self.G.tau * np.exp(-1/200))
+
 
     def sample(self, epoch):
         z = to_var(torch.randn(self.batch_size, 128))
@@ -222,6 +230,9 @@ def main():
                         seq_len=200,
                         data_dir="./data/trainset.fa",
                         num_epochs=1,
+                        lr=.0002,
+                        batch_size=128,
+                        d_steps=5,
                        )
     model.train_model(args.load_dir)
 
